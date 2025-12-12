@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ClimateCloud</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav class="navbar">
+    <div class="logo">
+      <span class="icon">🌍</span>
+      <h1>ClimateCloud</h1>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <ul>
+        <li>Temperature</li>
+        <li>Humidity</li>
+        <li>Data</li>
+        <li>Settings</li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Real-time Widgets -->
+      <div class="widgets-grid">
+        <div class="widget card">
+          <h3>🌡️ Temperature</h3>
+          <p class="value" id="temp-value">-- °C</p>
+        </div>
+        <div class="widget card">
+          <h3>💧 Humidity</h3>
+          <p class="value" id="hum-value">-- %</p>
+        </div>
+      </div>
+
+      <!-- Environment Insights -->
+      <div class="insights-grid">
+        <div class="card insight-card"><strong>Temperature:</strong> <span id="temp-status">--</span></div>
+        <div class="card insight-card"><strong>Air Quality:</strong> <span id="air-status">Good</span></div>
+        <div class="card insight-card"><strong>Heat Index:</strong> <span id="heat-status">--</span></div>
+        <div class="card insight-card"><strong>Humidity Level:</strong> <span id="hum-status">--</span></div>
+      </div>
+
+      <!-- Timeseries Table -->
+      <div class="card">
+        <h3>📊 Change Log (Only on Change)</h3>
+        <table class="timeseries-table" id="readings-table">
+          <thead>
+            <tr><th>Time</th><th>Temp (°C)</th><th>Hum (%)</th></tr>
+          </thead>
+          <tbody id="readings-body">
+            <!-- Filled by JS -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
