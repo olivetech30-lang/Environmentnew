@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
-#include <WiFiClientSecure.h>
 #include <HTTPClient.h>
+#include <WiFiClientSecure.h>  // ← Required for HTTPS
 #include <DHT.h>
 
 #define DHTPIN 38
@@ -12,7 +12,7 @@ DHT dht(DHTPIN, DHTTYPE);
 const char* ssid = "Jazz 4G MIFI_BB76";
 const char* password = "54917329";
 
-// ✅ Vercel API Endpoints (FULL HTTPS URLs)
+// ✅ Vercel Endpoints — NO TRAILING SPACES!
 const char* vercelUrlLatest = "https://temperaturesensor.vercel.app/api/latest";
 const char* vercelUrlReadings = "https://temperaturesensor.vercel.app/api/readings";
 
@@ -32,42 +32,44 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("\nWiFi connected!");
-  delay(2000); // Give network time to settle
+  delay(2000); // Stabilize network
 }
+
 void sendToVercel(const char* fullUrl, float temp, float hum) {
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("⚠️ WiFi disconnected");
+    Serial.println("⚠️ WiFi not connected");
     return;
   }
 
-  // Use secure client for HTTPS
+  // Use secure client and skip certificate validation
   WiFiClientSecure client;
-  client.setInsecure(); // Skip certificate validation (safe for Vercel)
+  client.setInsecure(); // ⚠️ Required for ESP32 to connect to Vercel
 
   HTTPClient http;
   if (!http.begin(client, fullUrl)) {
-    Serial.println("❌ Failed to initialize HTTP client");
+    Serial.println("❌ HTTP begin failed");
     return;
   }
 
   http.addHeader("Content-Type", "application/json");
 
-  // Build JSON safely
   String json = "{\"temperature\":" + String(temp, 1) + ",\"humidity\":" + String(hum, 1) + "}";
-  Serial.println("📤 Sending: " + json); // Debug: see what’s being sent
+  Serial.println("📤 Sending JSON: " + json);
 
   int code = http.POST(json);
-  if (code > 0) {
-    Serial.println("✅ Sent to: " + String(fullUrl) + " | Status: " + String(code));
+  if (code == 200) {
+    Serial.println("✅ Success: " + String(fullUrl));
   } else {
-    Serial.println("❌ HTTP Request Failed (Code: " + String(code) + ")");
+    Serial.println("❌ Failed with code: " + String(code));
   }
 
   http.end();
 }
 
 void loop() {
-  if (millis() - lastSend < SEND_INTERVAL) return;
+  if (millis() - lastSend < SEND_INTERVAL) {
+    return;
+  }
 
   float hum = dht.readHumidity();
   float temp = dht.readTemperature();
@@ -82,7 +84,7 @@ void loop() {
   bool humChanged = abs(hum - lastHum) > 1.0;
 
   if (tempChanged || humChanged) {
-    Serial.println("🔄 Change detected: Temp=" + String(temp) + "°C, Hum=" + String(hum) + "%");
+    Serial.println("🔄 Change detected: Temp=" + String(temp, 1) + "°C, Hum=" + String(hum, 1) + "%");
     sendToVercel(vercelUrlLatest, temp, hum);
     sendToVercel(vercelUrlReadings, temp, hum);
 
