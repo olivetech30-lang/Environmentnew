@@ -8,11 +8,14 @@
 DHT dht(DHTPIN, DHTTYPE);
 
 // 🔑 Replace with your WiFi and Vercel URL
-const char* ssid = "YOUR_WIFI_SSID";
-const char* password = "YOUR_WIFI_PASSWORD";
-// Use your actual Vercel deployment URL
-const char* vercelUrlLatest = "https://climatecloud.vercel.app/api/latest";
-const char* vercelUrlReadings = "https://climatecloud.vercel.app/api/readings";
+
+const char* ssid = "Jazz 4G MIFI_BB76";
+const char* password = "54917329";
+const char* vercelBaseUrl = "https://temperaturesensor.vercel.app";
+
+// ✅ Now construct full URLs
+const char* vercelUrlLatest = "/api/latest";      // Will be appended to base URL
+const char* vercelUrlReadings = "/api/readings"; 
 
 float lastTemp = -999;
 float lastHum = -999;
