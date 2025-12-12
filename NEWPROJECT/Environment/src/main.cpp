@@ -32,11 +32,8 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("\nWiFi connected!");
-  delay(1000); // Let network stabilize
+  delay(2000); // Give network time to settle
 }
-
-
-
 void sendToVercel(const char* fullUrl, float temp, float hum) {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("⚠️ WiFi disconnected");
